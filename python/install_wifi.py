@@ -210,44 +210,61 @@ def install_apk(device_serial=None):
     return code == 0 and "success" in output.lower()
 
 
-def interactive_menu():
-    """Интерактивное меню."""
+def clear_screen():
+    """Очищает экран."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def show_menu():
+    """Отображает заголовок и меню."""
     print("=" * 60)
     print("ADB WiFi — Сопряжение и установка APK")
     print("=" * 60)
+    print("  1. Сопряжение через код (Android 11+ Wireless Debugging)")
+    print("  2. Показать подключённые устройства")
+    print("  3. Установить APK на устройство")
+    print("  4. Отключить все устройства")
+    print("  5. Выйти")
+    print("=" * 60)
+
+
+def interactive_menu():
+    """Интерактивное меню."""
+    clear_screen()
 
     while True:
-        print("\nМеню:")
-        print("  1. Сопряжение через код (Android 11+ Wireless Debugging)")
-        print("  2. Показать подключённые устройства")
-        print("  3. Установить APK на устройство")
-        print("  4. Отключить все устройства")
-        print("  5. Выйти")
-
-        choice = input("\nВыбор [1-5]: ").strip()
+        show_menu()
+        choice = input("Выбор [1-5]: ").strip()
+        print()
 
         if choice == '1':
             print("\n[1] Сопряжение через код...")
             print("  Включите Wireless Debugging на устройстве")
             print("  Выберите 'Сопряжение по коду'")
             pair_and_connect()
+            input("\nНажмите Enter для продолжения...")
+            clear_screen()
 
         elif choice == '2':
             devices = list_connected_devices()
             if devices:
-                print(f"\nПодключённые устройства ({len(devices)}):")
+                print(f"Подключённые устройства ({len(devices)}):")
                 for dev in devices:
                     print(f"  • {dev}")
             else:
-                print("\nНет подключённых устройств.")
+                print("Нет подключённых устройств.")
+            input("\nНажмите Enter для продолжения...")
+            clear_screen()
 
         elif choice == '3':
             devices = list_connected_devices()
             if not devices:
-                print("\nНет подключённых устройств!")
+                print("Нет подключённых устройств!")
+                input("\nНажмите Enter для продолжения...")
+                clear_screen()
                 continue
 
-            print("\nДоступные устройства:")
+            print("Доступные устройства:")
             for i, dev in enumerate(devices, 1):
                 print(f"  {i}. {dev}")
 
@@ -260,16 +277,23 @@ def interactive_menu():
                     print("Неверный номер!")
             else:
                 print("Неверный ввод!")
+            input("\nНажмите Enter для продолжения...")
+            clear_screen()
 
         elif choice == '4':
             disconnect_all()
+            input("\nНажмите Enter для продолжения...")
+            clear_screen()
 
         elif choice == '5':
-            print("\nВыход. До свидания!")
+            clear_screen()
+            print("Выход. До свидания!")
             break
 
         else:
             print("Неверный выбор!")
+            input("\nНажмите Enter для продолжения...")
+            clear_screen()
 
 
 def main():
