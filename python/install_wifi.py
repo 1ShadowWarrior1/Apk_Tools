@@ -227,60 +227,22 @@ def interactive_menu():
 
     while True:
         print("\nМеню:")
-        print("  1. Сканировать сеть (поиск устройств с ADB WiFi)")
-        print("  2. Подключиться к устройству вручную (IP:порт)")
-        print("  3. Сопряжение через код (Android 11+ Wireless Debugging)")
-        print("  4. Показать подключённые устройства")
-        print("  5. Установить APK на устройство")
-        print("  6. Установить APK на все устройства")
-        print("  7. Отключить все устройства")
-        print("  8. Выйти")
+        print("  1. Сопряжение через код (Android 11+ Wireless Debugging)")
+        print("  2. Показать подключённые устройства")
+        print("  3. Установить APK на устройство")
+        print("  4. Установить APK на все устройства")
+        print("  5. Отключить все устройства")
+        print("  6. Выйти")
 
-        choice = input("\nВыбор [1-8]: ").strip()
+        choice = input("\nВыбор [1-6]: ").strip()
 
         if choice == '1':
-            print("\n[1] Поиск устройств...")
-
-            # Пробуем mDNS
-            mdns_devices = try_mdns_discovery()
-
-            # Сканируем сеть
-            found = scan_network_for_adb()
-
-            all_found = list(set(mdns_devices + found))
-
-            if all_found:
-                print(f"\nНайдено устройств: {len(all_found)}")
-                for i, dev in enumerate(all_found, 1):
-                    print(f"  {i}. {dev}")
-
-                connect_choice = input("\nПодключиться? (номер / все / нет): ").strip().lower()
-                if connect_choice == 'нет' or connect_choice == 'n':
-                    continue
-                elif connect_choice == 'все' or connect_choice == 'all':
-                    for dev in all_found:
-                        connect_to_device(dev)
-                elif connect_choice.isdigit():
-                    idx = int(connect_choice) - 1
-                    if 0 <= idx < len(all_found):
-                        connect_to_device(all_found[idx])
-                    else:
-                        print("Неверный номер!")
-            else:
-                print("\nУстройства не найдены.")
-
-        elif choice == '2':
-            address = input("Введите адрес (IP:порт): ").strip()
-            if address:
-                connect_to_device(address)
-
-        elif choice == '3':
-            print("\n[3] Сопряжение через код...")
+            print("\n[1] Сопряжение через код...")
             print("  Включите Wireless Debugging на устройстве")
             print("  Выберите 'Сопряжение по коду'")
             pair_and_connect()
 
-        elif choice == '4':
+        elif choice == '2':
             devices = list_connected_devices()
             if devices:
                 print(f"\nПодключённые устройства ({len(devices)}):")
@@ -289,7 +251,7 @@ def interactive_menu():
             else:
                 print("\nНет подключённых устройств.")
 
-        elif choice == '5':
+        elif choice == '3':
             devices = list_connected_devices()
             if not devices:
                 print("\nНет подключённых устройств!")
@@ -309,7 +271,7 @@ def interactive_menu():
             else:
                 print("Неверный ввод!")
 
-        elif choice == '6':
+        elif choice == '4':
             devices = list_connected_devices()
             if not devices:
                 print("\nНет подключённых устройств!")
@@ -320,10 +282,10 @@ def interactive_menu():
                 print(f"\n--- {dev} ---")
                 install_apk(dev)
 
-        elif choice == '7':
+        elif choice == '5':
             disconnect_all()
 
-        elif choice == '8':
+        elif choice == '6':
             print("\nВыход. До свидания!")
             break
 
