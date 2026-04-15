@@ -193,10 +193,18 @@ def disconnect_all():
 
 
 def install_apk(device_serial=None):
-    """Устанавливает APK на устройство."""
-    apk_path = find_apk_file(APK_DIR)
+    """Устанавливает подписанный APK на устройство."""
+    # Сначала ищем подписанный APK
+    SIGNED_APK = os.path.join(BASE_DIR, "app_signed.apk")
+    if os.path.exists(SIGNED_APK):
+        apk_path = SIGNED_APK
+    else:
+        apk_path = find_apk_file(APK_DIR)
+
     if apk_path is None:
-        print(f"Ошибка: в папке apk_original не найден ни один .apk файл")
+        print(f"Ошибка: не найден APK файл")
+        print(f"  Ожидаемый путь: {SIGNED_APK}")
+        print(f"  Или поместите APK в: {APK_DIR}")
         return False
 
     apk_filename = os.path.basename(apk_path)
@@ -222,7 +230,7 @@ def install_apk(device_serial=None):
 def interactive_menu():
     """Интерактивное меню."""
     print("=" * 60)
-    print("ADB WiFi — Поиск, подключение и установка APK")
+    print("ADB WiFi — Сопряжение и установка APK")
     print("=" * 60)
 
     while True:
@@ -230,11 +238,10 @@ def interactive_menu():
         print("  1. Сопряжение через код (Android 11+ Wireless Debugging)")
         print("  2. Показать подключённые устройства")
         print("  3. Установить APK на устройство")
-        print("  4. Установить APK на все устройства")
-        print("  5. Отключить все устройства")
-        print("  6. Выйти")
+        print("  4. Отключить все устройства")
+        print("  5. Выйти")
 
-        choice = input("\nВыбор [1-6]: ").strip()
+        choice = input("\nВыбор [1-5]: ").strip()
 
         if choice == '1':
             print("\n[1] Сопряжение через код...")
@@ -272,20 +279,9 @@ def interactive_menu():
                 print("Неверный ввод!")
 
         elif choice == '4':
-            devices = list_connected_devices()
-            if not devices:
-                print("\nНет подключённых устройств!")
-                continue
-
-            print(f"\nУстановка APK на {len(devices)} устройств...")
-            for dev in devices:
-                print(f"\n--- {dev} ---")
-                install_apk(dev)
-
-        elif choice == '5':
             disconnect_all()
 
-        elif choice == '6':
+        elif choice == '5':
             print("\nВыход. До свидания!")
             break
 
@@ -299,10 +295,12 @@ def main():
         print(f"Ошибка: adb.exe не найден - {ADB_EXE}")
         sys.exit(1)
 
-    # Проверяем наличие APK
-    if find_apk_file(APK_DIR) is None:
-        print(f"Предупреждение: в apk_original не найден .apk файл")
-        print("Сначала поместите APK в папку apk_original\n")
+    # Проверяем наличие подписанного APK
+    signed_apk = os.path.join(BASE_DIR, "app_signed.apk")
+    if not os.path.exists(signed_apk):
+        print(f"Предупреждение: подписанный APK не найден")
+        print(f"  Сначала запустите: 3_build.bat")
+        print(f"  Ожидаемый путь: {signed_apk}\n")
 
     interactive_menu()
 
