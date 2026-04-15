@@ -9,16 +9,6 @@ import time
 # Пути к директориям
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ADB_EXE = os.path.join(BASE_DIR, "tools", "adb", "adb.exe")
-APK_DIR = os.path.join(BASE_DIR, "apk_original")
-
-
-def find_apk_file(directory):
-    """Находит первый .apk файл в указанной директории."""
-    if os.path.exists(directory):
-        for f in os.listdir(directory):
-            if f.lower().endswith(".apk"):
-                return os.path.join(directory, f)
-    return None
 
 
 def run_cmd(cmd, timeout=15):
@@ -194,26 +184,19 @@ def disconnect_all():
 
 def install_apk(device_serial=None):
     """Устанавливает подписанный APK на устройство."""
-    # Сначала ищем подписанный APK
     SIGNED_APK = os.path.join(BASE_DIR, "app_signed.apk")
-    if os.path.exists(SIGNED_APK):
-        apk_path = SIGNED_APK
-    else:
-        apk_path = find_apk_file(APK_DIR)
-
-    if apk_path is None:
-        print(f"Ошибка: не найден APK файл")
-        print(f"  Ожидаемый путь: {SIGNED_APK}")
-        print(f"  Или поместите APK в: {APK_DIR}")
+    if not os.path.exists(SIGNED_APK):
+        print(f"Ошибка: подписанный APK не найден: {SIGNED_APK}")
+        print(f"  Сначала запустите: 3_build.bat")
         return False
 
-    apk_filename = os.path.basename(apk_path)
+    apk_filename = os.path.basename(SIGNED_APK)
     print(f"\nУстановка APK: {apk_filename}")
 
     cmd = f'"{ADB_EXE}"'
     if device_serial:
         cmd += f' -s {device_serial}'
-    cmd += f' install -r "{apk_path}"'
+    cmd += f' install -r "{SIGNED_APK}"'
 
     print(f"Устройство: {device_serial or 'по умолчанию'}")
     stdout, stderr, code = run_cmd(cmd, timeout=120)
