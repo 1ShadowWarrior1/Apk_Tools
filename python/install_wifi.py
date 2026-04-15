@@ -278,13 +278,6 @@ def main():
         print(f"Ошибка: adb.exe не найден - {ADB_EXE}")
         sys.exit(1)
 
-    # Проверяем наличие подписанного APK
-    signed_apk = os.path.join(BASE_DIR, "app_signed.apk")
-    if not os.path.exists(signed_apk):
-        print(f"Предупреждение: подписанный APK не найден")
-        print(f"  Сначала запустите: 3_build.bat")
-        print(f"  Ожидаемый путь: {signed_apk}\n")
-
     interactive_menu()
 
 
