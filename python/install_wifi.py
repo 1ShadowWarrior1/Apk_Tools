@@ -140,23 +140,27 @@ def list_connected_devices():
     return devices
 
 
-def pair_and_connect(host=None, port=None, pairing_code=None):
+def pair_and_connect(host=None, pair_port=None, pairing_code=None, connect_port=None):
     """Сопряжение через код (Android 11+ Wireless Debugging), затем подключение."""
     if host is None:
         host = input("  IP-адрес устройства: ").strip()
-    if port is None:
-        port = input("  Порт сопряжения: ").strip()
+    if pair_port is None:
+        pair_port = input("  Порт сопряжения: ").strip()
     if pairing_code is None:
         pairing_code = input("  Код сопряжения: ").strip()
+    if connect_port is None:
+        connect_port = input("  Порт подключения: ").strip()
 
-    if not (host and port and pairing_code):
+    if not (host and pair_port and pairing_code and connect_port):
         print("  Все поля обязательны!")
         return False
 
-    address = f"{host}:{port}"
-    print(f"\n  Сопряжение с {address}...")
+    pair_address = f"{host}:{pair_port}"
+    connect_address = f"{host}:{connect_port}"
+
+    print(f"\n  Сопряжение с {pair_address}...")
     stdout, stderr, code = run_cmd(
-        f'"{ADB_EXE}" pair {address} {pairing_code}', timeout=30
+        f'"{ADB_EXE}" pair {pair_address} {pairing_code}', timeout=30
     )
     output = (stdout + stderr).strip()
     for line in output.split('\n'):
@@ -164,17 +168,13 @@ def pair_and_connect(host=None, port=None, pairing_code=None):
         if line:
             print(f"  {line}")
 
-    if code == 0 or "successfully" in output.lower() or "paired" in output.lower():
-        print("  Сопряжение успешно!")
-        # Теперь подключаемся через тот же IP, но порт подключения может отличаться
-        # Обычно после pair нужно просто connect
-        connect_addr = input("\n  Адрес для подключения (IP:порт подключения): ").strip()
-        if connect_addr:
-            return connect_to_device(connect_addr)
-        return True
-    else:
+    if code != 0 and "successfully" not in output.lower() and "paired" not in output.lower():
         print("  Ошибка сопряжения!")
         return False
+
+    print("  Сопряжение успешно!")
+    print(f"\n  Подключение к {connect_address}...")
+    return connect_to_device(connect_address)
 
 
 def connect_to_device(address):
