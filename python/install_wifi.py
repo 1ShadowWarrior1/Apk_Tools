@@ -130,27 +130,24 @@ def list_connected_devices():
     return devices
 
 
-def pair_and_connect(host=None, pair_port=None, pairing_code=None, connect_port=None):
+def pair_and_connect(host=None, port=None, pairing_code=None):
     """Сопряжение через код (Android 11+ Wireless Debugging), затем подключение."""
     if host is None:
         host = input("  IP-адрес устройства: ").strip()
-    if pair_port is None:
-        pair_port = input("  Порт сопряжения: ").strip()
+    if port is None:
+        port = input("  Порт: ").strip()
     if pairing_code is None:
         pairing_code = input("  Код сопряжения: ").strip()
-    if connect_port is None:
-        connect_port = input("  Порт подключения: ").strip()
 
-    if not (host and pair_port and pairing_code and connect_port):
+    if not (host and port and pairing_code):
         print("  Все поля обязательны!")
         return False
 
-    pair_address = f"{host}:{pair_port}"
-    connect_address = f"{host}:{connect_port}"
+    address = f"{host}:{port}"
 
-    print(f"\n  Сопряжение с {pair_address}...")
+    print(f"\n  Сопряжение с {address}...")
     stdout, stderr, code = run_cmd(
-        f'"{ADB_EXE}" pair {pair_address} {pairing_code}', timeout=30
+        f'"{ADB_EXE}" pair {address} {pairing_code}', timeout=30
     )
     output = (stdout + stderr).strip()
     for line in output.split('\n'):
@@ -163,8 +160,8 @@ def pair_and_connect(host=None, pair_port=None, pairing_code=None, connect_port=
         return False
 
     print("  Сопряжение успешно!")
-    print(f"\n  Подключение к {connect_address}...")
-    return connect_to_device(connect_address)
+    print(f"\n  Подключение к {address}...")
+    return connect_to_device(address)
 
 
 def connect_to_device(address):
