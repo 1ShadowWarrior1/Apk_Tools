@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(java *)",
+      "Bash(\"c:\\users\\a321s\\desktop\\apk-small\\tools\\jadx-1.5.5\\bin\\jadx.bat\" *)",
+      "Bash(cmd *)",
+      "Bash(rmdir *)",
+      "Bash(jadx.bat *)",
+      "Bash(dir *)",
+      "Bash(git init)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(git *)"
+    ]
+  },
+  "$version": 3
+}

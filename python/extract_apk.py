@@ -3,9 +3,22 @@ import os
 import sys
 import shutil
 
+def find_apk_file(directory):
+    """Находит первый .apk файл в указанной директории."""
+    if os.path.exists(directory):
+        for f in os.listdir(directory):
+            if f.lower().endswith(".apk"):
+                return os.path.join(directory, f)
+    return None
+
+
 # Пути к директориям
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APK_INPUT = os.path.join(BASE_DIR, "apk_original", "base.apk")
+APK_DIR = os.path.join(BASE_DIR, "apk_original")
+APK_INPUT = find_apk_file(APK_DIR)
+if APK_INPUT is None:
+    print(f"Ошибка: в папке apk_original не найден ни один .apk файл")
+    sys.exit(1)
 OUTPUT_7Z = os.path.join(BASE_DIR, "7zip_apk")
 DEX_OUTPUT = os.path.join(BASE_DIR, "dex_original")
 SMALI_OUTPUT = os.path.join(BASE_DIR, "small")

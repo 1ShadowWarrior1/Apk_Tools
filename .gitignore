@@ -1,0 +1,51 @@
+# === Рабочие директории (артефакты распаковки/сборки) ===
+7zip_apk/
+dex_original/
+java/
+small/
+
+# === APK артефакты ===
+*.apk
+*.aab
+
+# === DEX / Smali ===
+*.dex
+*.odex
+*.oat
+*.vdex
+*.smali
+
+# === Keystore / ключи подписи ===
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.bks
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# === Временные файлы (из build_apk.py) ===
+temp_unsigned.apk
+temp_aligned.apk
+*.tmp
+
+# === Логи ===
+*.log
+
+# === OS ===
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
